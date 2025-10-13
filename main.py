@@ -6,8 +6,9 @@ from webdriver_manager.chrome import ChromeDriverManager
 import time
 
 # Impor fungsi spesialis dari file lain
-from table1 import get_data_from_table1
-from table2 import get_data_from_table2
+from table_1 import get_data_from_table1
+from table_2 import get_data_from_table2
+from transform import transform_data
 
 def setup_driver():
     """Menginisialisasi dan mengkonfigurasi driver Selenium Chrome."""
@@ -26,12 +27,7 @@ def setup_driver():
 @functions_framework.http
 def scrape_alphaliner(request):
     """
-    Cloud Function yang bertindak sebagai manajer:
-    1. Menyiapkan browser.
-    2. Memanggil scraper tabel 1.
-    3. Memanggil scraper tabel 2.
-    4. Menggabungkan hasilnya.
-    5. Membersihkan.
+    Cloud Function yang melakukan scraping DAN transformasi data.
     """
     driver = setup_driver()
     
@@ -40,16 +36,18 @@ def scrape_alphaliner(request):
         driver.get(url)
         time.sleep(10)
         
-        # Panggil fungsi dari masing-masing modul
+        # Langkah 1: Scrape data dari kedua tabel
         df_main = get_data_from_table1(driver)
         df_details = get_data_from_table2(driver)
 
-        # Gabungkan hasil pekerjaan mereka
-        df_details_subset = df_details.drop(columns=["Operator"])
-        merged_df = pd.merge(df_main, df_details_subset, on="Rank", how="left")
+        # Langkah 2: Gabungkan data (jika diperlukan, dalam kasus ini kita hanya butuh df_details)
+        raw_data = df_details
         
-        print("Berhasil menggabungkan data.")
-        json_output = merged_df.to_json(orient='records')
+        # Langkah 3: Panggil fungsi transformasi
+        transformed_df = transform_data(raw_data)
+        
+        # Langkah 4: Ubah hasil bersih menjadi JSON
+        json_output = transformed_df.to_json(orient='records')
         
         return (json_output, 200, {'Content-Type': 'application/json'})
 
