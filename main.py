@@ -94,6 +94,3 @@ def scrape_alphaliner(request):
     
     finally:
         driver.quit()
-
-# Baris ini penting agar Gunicorn dapat menemukan aplikasi Anda di dalam container
-app = functions_framework.create_app('scrape_alphaliner', 'main.py')

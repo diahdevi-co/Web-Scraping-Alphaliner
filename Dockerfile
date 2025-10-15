@@ -34,6 +34,4 @@ COPY . .
 # Beritahu Cloud Run port mana yang harus didengarkan
 ENV PORT 8080
 
-# Perintah untuk menjalankan aplikasi saat container dimulai
-# Gunicorn adalah server WSGI standar untuk production
-CMD ["gunicorn", "--bind", "0.0.0.0:8080", "--timeout", "300", "main:app"]
+CMD ["functions-framework", "--target=scrape_alphaliner", "--host=0.0.0.0", "--port=8080"]
