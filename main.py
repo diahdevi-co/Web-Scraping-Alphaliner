@@ -5,7 +5,7 @@ import time
 from google.cloud import storage, bigquery
 from datetime import datetime
 
-# Impor fungsi yang relevan saja (sesuai alur notebook)
+# Impor fungsi yang relevan saja 
 from table_2 import get_data_from_table2
 from transform import transform_data
 
@@ -95,5 +95,5 @@ def scrape_alphaliner(request):
     finally:
         driver.quit()
 
-# Baris ini penting agar Gunicorn dapat menemukan aplikasi Anda di dalam container
+# Baris ini penting agar Gunicorn dapat menemukan aplikasi di dalam container
 app = functions_framework.create_app('scrape_alphaliner', 'main.py')
